@@ -1,40 +1,39 @@
-Below are the steps to get your plugin running. You can also find instructions at:
+STRUCTURE GENERATOR – QUICK START
 
-  https://www.figma.com/plugin-docs/plugin-quickstart-guide/
+Figma Plugin
 
-This plugin template uses Typescript and NPM, two standard tools in creating JavaScript applications.
+Create pages and layers in Figma using a simple command-based syntax.
+Get started in under 2 minutes.
 
-First, download Node.js which comes with NPM. This will allow you to install TypeScript and other
-libraries. You can find the download link here:
+1. Open the Plugin - Open any Figma file - Right-click on the canvas - Go to Plugins → Structure Generator
 
-  https://nodejs.org/en/download/
+2. Choose One Mode (Do Not Mix) Use only one mode per command.
 
-Next, install TypeScript using the command:
+MODE A — Same Layers for All Pages
 
-  npm install -g typescript
+Command
 
-Finally, in the directory of your plugin, get the latest type definitions for the plugin API by running:
+1.	pages: Page One, Page Two, Page Three
+2.	layers: 5
+3.	layerPrefix: Section
 
-  npm install --save-dev @figma/plugin-typings
+What This Creates - 3 pages, 5 frames inside each page, Frame names: Section 01 → Section 05.
 
-If you are familiar with JavaScript, TypeScript will look very familiar. In fact, valid JavaScript code
-is already valid Typescript code.
+MODE B — Different Layers Per Page
 
-TypeScript adds type annotations to variables. This allows code editors such as Visual Studio Code
-to provide information about the Figma API while you are writing code, as well as help catch bugs
-you previously didn't notice.
+Command
 
-For more information, visit https://www.typescriptlang.org/
+1.	pages name = Foundations -> Layer Name = Grid, Layer Name = Breakpoints, Layer Name = Elevation.
+2.	pages name = Typography -> Layer Name = Font Families, Layer Name = Type Scale.
+3.	pages name = Components -> Layer Name = Buttons, Layer Name = Inputs, Cards.
 
-Using TypeScript requires a compiler to convert TypeScript (code.ts) into JavaScript (code.js)
-for the browser to run.
+What This Creates - Pages with custom layer names , One frame per layer name
 
-We recommend writing TypeScript code using Visual Studio code:
+Click Generate Structure
 
-1. Download Visual Studio Code if you haven't already: https://code.visualstudio.com/.
-2. Open this directory in Visual Studio Code.
-3. Compile TypeScript to JavaScript: Run the "Terminal > Run Build Task..." menu item,
-    then select "npm: watch". You will have to do this again every time
-    you reopen Visual Studio Code.
+4. Important Rules
 
-That's it! Visual Studio Code will regenerate the JavaScript file every time you save.
+1.	Use only one mode at a time
+2.	Separate names using commas (,)
+3.	Use -> to define page-specific layers
+4.	Frames are created (not components)
