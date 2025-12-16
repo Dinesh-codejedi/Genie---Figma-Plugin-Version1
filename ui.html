@@ -62,7 +62,7 @@
       font-size: 14px;
       font-weight: 500;
       color: #ffffff;
-      background: #0f172a;
+      background: #18A0FB;
       border: none;
       border-radius: 6px;
       cursor: pointer;
@@ -71,17 +71,17 @@
     }
 
     button:hover {
-      background: #1e293b;
+      background: #0D8CE8;
     }
 
     button:active {
-      background: #0f172a;
+      background: #0B7BCF;
       transform: scale(0.98);
     }
 
     button:focus {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+      box-shadow: 0 0 0 3px rgba(24, 160, 251, 0.2);
     }
 
     #error {
@@ -110,9 +110,9 @@
       <textarea 
         id="command" 
         rows="6" 
-        placeholder="Foundations -> Grid, Breakpoints, Elevation, Motion&#10;Typography -> Font Families, Type Scale, Headings&#10;Components -> Buttons, Inputs, Cards"
+        
       ></textarea>
-      <p class="helper-text">Page Name -> Layer Name, Layer Name, Layer Name</p>
+      <p class="helper-text">MODE A: pages: Page1, Page2 | layers: 5 | layerPrefix: Section<br>MODE B: Page Name -> Layer1, Layer2, Layer3</p>
     </div>
     
     <button id="generate">Generate</button>
@@ -121,44 +121,86 @@
   </div>
 
   <script>
-  const errorEl = document.getElementById("error");
+    // UI-only code - no Figma API calls
+    // This script only handles input collection and message sending
+    
+    const errorEl = document.getElementById("error");
+    const commandEl = document.getElementById("command");
+    const generateBtn = document.getElementById("generate");
 
-  document.getElementById("generate").onclick = () => {
-    const input = document.getElementById("command").value.trim();
-
-    errorEl.style.display = "none";
-
-    const hasArrow = input.includes("->");
-    const hasLayers = input.includes("layers:");
-
-    if (!input) {
-      return showError("Command cannot be empty.");
+    /**
+     * Show error message in UI
+     * UI validation only - main validation happens in code.ts
+     */
+    function showError(msg) {
+      errorEl.innerText = msg;
+      errorEl.style.display = "block";
     }
 
-    if (hasArrow && hasLayers) {
-      return showError("Do not mix global and page-specific syntax.");
+    /**
+     * Hide error message
+     */
+    function hideError() {
+      errorEl.style.display = "none";
     }
 
-    if (!hasArrow && !hasLayers) {
-      return showError("Invalid command format.");
+    /**
+     * Basic UI validation before sending message
+     * Main validation and parsing happens in code.ts
+     */
+    function validateInput(input) {
+      if (!input || !input.trim()) {
+        return "Command cannot be empty";
+      }
+
+      const trimmed = input.trim();
+      const hasArrow = trimmed.includes("->");
+      const hasPages = trimmed.toLowerCase().includes("pages:");
+      const hasLayers = trimmed.toLowerCase().includes("layers:");
+
+      // Check for mixed modes
+      if (hasArrow && (hasPages || hasLayers)) {
+        return "Do not mix global and page-specific syntax";
+      }
+
+      // MODE A must have pages and layers
+      if (!hasArrow && (!hasPages || !hasLayers)) {
+        return "MODE A requires 'pages:' and 'layers:' fields";
+      }
+
+      return null;
     }
 
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: "parse-and-generate",
-          payload: input
-        }
-      },
-      "*"
-    );
-  };
+    /**
+     * Handle generate button click
+     * Collects input and sends message to main thread
+     */
+    generateBtn.onclick = () => {
+      const input = commandEl.value.trim();
+      
+      // Hide previous errors
+      hideError();
 
-  function showError(msg) {
-    errorEl.innerText = msg;
-    errorEl.style.display = "block";
-  }
-</script>
+      // Basic UI validation
+      const validationError = validateInput(input);
+      if (validationError) {
+        showError(validationError);
+        return;
+      }
+
+      // Send message to main thread (code.ts)
+      // All Figma API calls happen in code.ts, not here
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: "parse-and-generate",
+            payload: input
+          }
+        },
+        "*"
+      );
+    };
+  </script>
 
 </body>
 </html>
